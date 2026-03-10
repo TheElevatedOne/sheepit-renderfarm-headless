@@ -1,9 +1,48 @@
 #!/usr/bin/env bash
 
+# Global Variables
+TMP="/tmp"
+WORK_D="sheepit-headless"
+CPU="1"
 
 # Functions
 function waitFunction {
 sleep .9
+}
+
+function cpu_get {
+  # Set cpu threads and return
+  # $1 -> $CPU
+  # $2 -> $QUIET
+}
+
+function prepare_tmp {
+  # Prepare temporary working directory
+  # $1 -> $TMP
+  # $2 -> $QUIET
+
+  # Custom working directory check
+  if ! [ -d "$1" ] && [ "$1" != "$TMP" ]; then
+    if [ "$2" -eq 1 ]; then
+      printf "[WARN] $1 is not a valid path!\n"]
+      printf "[INFO] Switching to /tmp\n"
+    fi
+  else
+    TMP="$1"
+  fi
+
+  # Actual working directory check
+  if ! [ -d "$TMP/$WORK_D" ]; then
+    if [ "$2" -eq 1 ]; then
+      printf "[INFO] Creating $TMP/$WORK_D\n"
+    fi
+    mkdir -p "$TMP/$WORK_D"
+  else
+    if [ "$2" -eq 1 ]; then
+      printf "[INFO] $TMP/$WORK_D exists, cleaning it\n"
+    fi
+    rm -r $TMP/$WORK_D/*
+  fi
 }
 
 function show_help {
@@ -24,8 +63,7 @@ function show_help {
   \n"
 }
 
-# Actual code
-
+# Argument Parser
 for i in "$@"; do
   case $i in
     -h | --help)
