@@ -1,25 +1,43 @@
-#!/bin/bash
-# Script to Download and run Sheepit render client
-# By Josh
-# Version .05
+#!/usr/bin/env bash
 
-# Possible additions: Add Colours
-
-# Variables
-UsernameVariable=""
-PasswordVariable=""
 
 # Functions
 function waitFunction {
 sleep .9
 }
 
+function show_help {
+  printf "> sheepit-headless [-h/--help] [ARGS]
+
+  SheepIt Render Farm Headless Script
+  
+  HELP:
+    -h, --help      Show this help message
+    -v, --version   Show script version
+
+  ARGUMENTS:
+    -q, --quiet     Do not show info nor errors
+    -c, --cpu       How many CPU threads to use
+    -j, --java      Path to specific java executable to use
+        --jar       Specify your own SheepIt JAR file
+    -t, --tmp       Path to a base working directory (Default: /tmp)
+  \n"
+}
+
 # Actual code
+
+for i in "$@"; do
+  case $i in
+    -h | --help)
+      show_help
+      exit 0
+  esac
+done
+
+CT_MAX="$(grep -c ^processor /proc/cpuinfo)"
 
 printf "How many cores do you want to use, you have the option of using: "
 grep -c ^processor /proc/cpuinfo
-read -r NoC
-echo "Sweet, using $NoC cores"
 waitFunction
 echo "Alright, making a folder"
 cd /tmp || exit
@@ -47,6 +65,6 @@ echo "Ready"
 waitFunction
 echo "Ctrl + C to stop"
 mkdir /tmp/sheepit-cache
-java -jar sheepit-clientTMPLATEST.jar -login "$UsernameVariable" -password "$PasswordVariable" -ui text -cores "$NoC" -cache-dir /tmp/sheepit-cache
+java -jar sheepit-clientTMPLATEST.jar -login "$UsernameVariable" -password "$PasswordVariable" -ui text -cores "$" -cache-dir /tmp/sheepit-cache
 cd
 exit
